@@ -1,5 +1,6 @@
 import youtube_dlc
 
+
 class CustomLogger(object):
     def debug(self, msg):
         pass
@@ -13,6 +14,7 @@ class CustomLogger(object):
 
 def custom_hook(data):
     print(data)
+
 
 ydlc_opts = {
     'logger': CustomLogger(),

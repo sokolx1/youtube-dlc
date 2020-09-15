@@ -605,7 +605,7 @@ class FFmpegSubtitlesConvertorPP(FFmpegPostProcessor):
         super(FFmpegSubtitlesConvertorPP, self).__init__(downloader)
         self.format = format
 
-    @decorator_hook({'status': 'pre', 'action': 'subtitle_conversion'},{'status': 'post', 'action': 'subtitle_conversion'})
+    @decorator_hook({'status': 'pre', 'action': 'subtitle_conversion'}, {'status': 'post', 'action': 'subtitle_conversion'})
     def run(self, info):
         subs = info.get('requested_subtitles')
         filename = info['filepath']
