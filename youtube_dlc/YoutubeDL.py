@@ -429,8 +429,11 @@ class YoutubeDL(object):
             del pp_def['key']
             pp = pp_class(self, **compat_kwargs(pp_def))
             self.add_post_processor(pp)
+            for ph in self.params.get('progress_hooks', []):
+                pp.add_progress_hook(ph)
 
         for ph in self.params.get('progress_hooks', []):
+            # registering hooks passed from custom code
             self.add_progress_hook(ph)
 
         register_socks_protocols()
@@ -1822,6 +1825,7 @@ class YoutubeDL(object):
 
         def dl(name, info):
             fd = get_suitable_downloader(info, self.params)(self, self.params)
+            # important to add hooks here otherwise won't send data
             for ph in self._progress_hooks:
                 fd.add_progress_hook(ph)
             if self.params.get('verbose'):

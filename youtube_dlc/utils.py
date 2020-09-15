@@ -36,6 +36,8 @@ import traceback
 import xml.etree.ElementTree
 import zlib
 
+from functools import wraps
+
 from .compat import (
     compat_HTMLParseError,
     compat_HTMLParser,
@@ -5706,3 +5708,19 @@ def random_birthday(year_field, month_field, day_field):
         month_field: str(random_date.month),
         day_field: str(random_date.day),
     }
+
+def decorator_hook(pre=None, post=None):
+    """
+    a decorator to trigger pre and post hooks
+    """
+    def outer_wrapper(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            if pre:
+                args[0]._hook_progress(pre)
+            fn = func(*args, **kwargs)
+            if post:
+                args[0]._hook_progress(post)
+            return fn
+        return wrapper
+    return outer_wrapper

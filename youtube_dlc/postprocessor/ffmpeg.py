@@ -21,6 +21,7 @@ from ..utils import (
     dfxp2srt,
     ISO639Utils,
     replace_extension,
+    decorator_hook,
 )
 
 
@@ -604,6 +605,7 @@ class FFmpegSubtitlesConvertorPP(FFmpegPostProcessor):
         super(FFmpegSubtitlesConvertorPP, self).__init__(downloader)
         self.format = format
 
+    @decorator_hook({'status': 'pre', 'action': 'subtitle_conversion'},{'status': 'post', 'action': 'subtitle_conversion'})
     def run(self, info):
         subs = info.get('requested_subtitles')
         filename = info['filepath']
@@ -616,6 +618,7 @@ class FFmpegSubtitlesConvertorPP(FFmpegPostProcessor):
             return [], info
         self._downloader.to_screen('[ffmpeg] Converting subtitles')
         sub_filenames = []
+        converted_subs = []
         for lang, sub in subs.items():
             ext = sub['ext']
             if ext == new_ext:
@@ -625,6 +628,7 @@ class FFmpegSubtitlesConvertorPP(FFmpegPostProcessor):
             old_file = subtitles_filename(filename, lang, ext, info.get('ext'))
             sub_filenames.append(old_file)
             new_file = subtitles_filename(filename, lang, new_ext, info.get('ext'))
+            converted_subs.append(new_file)
 
             if ext in ('dfxp', 'ttml', 'tt'):
                 self._downloader.report_warning(
@@ -659,4 +663,14 @@ class FFmpegSubtitlesConvertorPP(FFmpegPostProcessor):
                     'data': f.read(),
                 }
 
+        print('[ffmpeg]-[ffmpegsubtitleconvertor]')
+        sample_hook = {
+            'status': 'finished',
+            'action': 'subtitle_conversion',
+            'orignal_subtitles': sub_filenames,
+            'converted_subtitles': converted_subs,
+        }
+        print('[ppc] pre ffmpegpp hook_progress')
+        self._hook_progress(sample_hook)
+        print('[ppc] past ffmpegpp hook_progress')
         return sub_filenames, info
