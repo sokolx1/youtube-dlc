@@ -325,6 +325,7 @@ from .ellentube import (
     EllenTubeVideoIE,
     EllenTubePlaylistIE,
 )
+from .elonet import ElonetIE
 from .elpais import ElPaisIE
 from .embedly import EmbedlyIE
 from .engadget import EngadgetIE
@@ -935,7 +936,9 @@ from .rbmaradio import RBMARadioIE
 from .rds import RDSIE
 from .redbulltv import (
     RedBullTVIE,
+    RedBullEmbedIE,
     RedBullTVRrnContentIE,
+    RedBullIE,
 )
 from .reddit import (
     RedditIE,

@@ -256,6 +256,7 @@
  - **EllenTube**
  - **EllenTubePlaylist**
  - **EllenTubeVideo**
+ - **Elonet**
  - **ElPais**: El País
  - **Embedly**
  - **EMPFlix**
@@ -726,6 +727,8 @@
  - **RayWenderlichCourse**
  - **RBMARadio**
  - **RDS**: RDS.ca
+ - **RedBull**
+ - **RedBullEmbed**
  - **RedBullTV**
  - **RedBullTVRrnContent**
  - **Reddit**
