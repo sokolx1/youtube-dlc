@@ -13,6 +13,8 @@ README.txt
 youtube-dl.1
 youtube-dl.bash-completion
 youtube-dl
+youtube-dl.fish
+youtube-dl.zsh
 youtube-dl.exe
 youtube-dl.tar.gz
 .coverage
