@@ -359,6 +359,22 @@ class YoutubeDL(object):
         }
         self.params.update(params)
         self.cache = Cache(self)
+        self.archive = set()
+
+        """Preload the archive, if any is specified"""
+        def preload_download_archive(self):
+            fn = self.params.get('download_archive')
+            if fn is None:
+                return False
+            try:
+                with locked_file(fn, 'r', encoding='utf-8') as archive_file:
+                    for line in archive_file:
+                        self.archive.add(line.strip())
+            except IOError as ioe:
+                if ioe.errno != errno.ENOENT:
+                    raise
+                return False
+            return True
 
         def check_deprecated(param, option, suggestion):
             if self.params.get(param) is not None:
@@ -366,6 +382,11 @@ class YoutubeDL(object):
                     '%s is deprecated. Use %s instead.' % (option, suggestion))
                 return True
             return False
+
+        if self.params.get('verbose'):
+            self.to_stdout('[debug] Loading archive file %r' % self.params.get('download_archive'))
+
+        preload_download_archive(self)
 
         if check_deprecated('cn_verification_proxy', '--cn-verification-proxy', '--geo-verification-proxy'):
             if self.params.get('geo_verification_proxy') is None:
@@ -722,7 +743,7 @@ class YoutubeDL(object):
             return None
 
     def _match_entry(self, info_dict, incomplete):
-        """ Returns None iff the file should be downloaded """
+        """ Returns None if the file should be downloaded """
 
         video_title = info_dict.get('title', info_dict.get('id', 'video'))
         if 'title' in info_dict:
@@ -2142,15 +2163,7 @@ class YoutubeDL(object):
         if not vid_id:
             return False  # Incomplete video information
 
-        try:
-            with locked_file(fn, 'r', encoding='utf-8') as archive_file:
-                for line in archive_file:
-                    if line.strip() == vid_id:
-                        return True
-        except IOError as ioe:
-            if ioe.errno != errno.ENOENT:
-                raise
-        return False
+        return vid_id in self.archive
 
     def record_download_archive(self, info_dict):
         fn = self.params.get('download_archive')
@@ -2160,6 +2173,7 @@ class YoutubeDL(object):
         assert vid_id
         with locked_file(fn, 'a', encoding='utf-8') as archive_file:
             archive_file.write(vid_id + '\n')
+        self.archive.add(vid_id)
 
     @staticmethod
     def format_resolution(format, default='unknown'):
