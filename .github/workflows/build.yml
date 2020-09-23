@@ -26,6 +26,8 @@ jobs:
     - name: Bump version
       id: bump_version
       run: python scripts/update-version-workflow.py
+    - name: Check the output from My action
+      run: echo "${{ steps.bump_version.outputs.ytdlc_version }}"
     - name: Run Make
       run: make
     - name: Create Release
