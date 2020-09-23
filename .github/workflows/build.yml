@@ -6,7 +6,7 @@ on:
       - release
 
 jobs:
-  build_unix_and_deploy_pypi:
+  build_unix:
 
     runs-on: ubuntu-latest
 
@@ -58,11 +58,11 @@ jobs:
       env:
         SHA2: ${{ hashFiles('youtube-dlc') }}
       run: echo "::set-output name=sha2_unix::${env:SHA2}"
-    - name: Install dependencies for pypi
+    - name: Install dependencies for PyPI
       run: |
         python -m pip install --upgrade pip
         pip install setuptools wheel twine
-    - name: Build and publish
+    - name: Build and publish on PyPI
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
