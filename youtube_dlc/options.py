@@ -580,6 +580,10 @@ def parseOpts(overrideArguments=None):
             'Upper bound of a range for randomized sleep before each download '
             '(maximum possible number of seconds to sleep). Must only be used '
             'along with --min-sleep-interval.'))
+    workarounds.add_option(
+        '--sleep-subtitles',
+        dest='sleep_interval_subtitles', action='store_true', default=False,
+        help='Enforce sleep interval on subtitles as well')
 
     verbosity = optparse.OptionGroup(parser, 'Verbosity / Simulation Options')
     verbosity.add_option(
@@ -771,6 +775,9 @@ def parseOpts(overrideArguments=None):
         '--rm-cache-dir',
         action='store_true', dest='rm_cachedir',
         help='Delete all filesystem cache files')
+    filesystem.add_option(
+        '--trim-file-name', dest='trim_file_name', default=0, type=int,
+        help='Limit the filename length (extension excluded)')
 
     thumbnail = optparse.OptionGroup(parser, 'Thumbnail images')
     thumbnail.add_option(

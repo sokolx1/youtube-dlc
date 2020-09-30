@@ -164,7 +164,8 @@ class YoutubeDL(object):
     simulate:          Do not download the video files.
     format:            Video format code. See options.py for more information.
     outtmpl:           Template for output names.
-    restrictfilenames: Do not allow "&" and spaces in file names
+    restrictfilenames: Do not allow "&" and spaces in file names.
+    trim_file_name:    Limit length of filename (extension excluded).
     ignoreerrors:      Do not stop on download errors.
     force_generic_extractor: Force downloader to use the generic extractor
     nooverwrites:      Prevent overwriting files.
@@ -731,6 +732,16 @@ class YoutubeDL(object):
             # be expanded. For example, for outtmpl "%(title)s.%(ext)s" and
             # title "Hello $PATH", we don't want `$PATH` to be expanded.
             filename = expand_path(outtmpl).replace(sep, '') % template_dict
+
+            # https://github.com/blackjack4494/youtube-dlc/issues/85
+            trim_file_name = self.params.get('trim_file_name', False)
+            if trim_file_name:
+                fn_groups = filename.rsplit('.')
+                ext = fn_groups[-1]
+                sub_ext = ''
+                if len(fn_groups) > 2:
+                    sub_ext = fn_groups[-2]
+                filename = '.'.join(filter(None, [fn_groups[0][:trim_file_name], sub_ext, ext]))
 
             # Temporary fix for #4787
             # 'Treat' all problem characters by passing filename through preferredencoding
@@ -1856,12 +1867,14 @@ class YoutubeDL(object):
             # subtitles download errors are already managed as troubles in relevant IE
             # that way it will silently go on when used with unsupporting IE
             subtitles = info_dict['requested_subtitles']
+            ie = self.get_info_extractor(info_dict['extractor_key'])
             for sub_lang, sub_info in subtitles.items():
                 sub_format = sub_info['ext']
                 sub_filename = subtitles_filename(filename, sub_lang, sub_format, info_dict.get('ext'))
                 if self.params.get('nooverwrites', False) and os.path.exists(encodeFilename(sub_filename)):
                     self.to_screen('[info] Video subtitle %s.%s is already present' % (sub_lang, sub_format))
                 else:
+                    self.to_screen('[info] Writing video subtitles to: ' + sub_filename)
                     if sub_info.get('data') is not None:
                         try:
                             # Use newline='' to prevent conversion of newline characters
@@ -1873,11 +1886,14 @@ class YoutubeDL(object):
                             return
                     else:
                         try:
-                            dl(sub_filename, sub_info)
-                        except (ExtractorError, IOError, OSError, ValueError,
-                                compat_urllib_error.URLError,
-                                compat_http_client.HTTPException,
-                                socket.error) as err:
+                            if self.params.get('sleep_interval_subtitles', False):
+                                dl(sub_filename, sub_info)
+                            else:
+                                sub_data = ie._request_webpage(
+                                    sub_info['url'], info_dict['id'], note=False).read()
+                                with io.open(encodeFilename(sub_filename), 'wb') as subfile:
+                                    subfile.write(sub_data)
+                        except (ExtractorError, IOError, OSError, ValueError, compat_urllib_error.URLError, compat_http_client.HTTPException, socket.error) as err:
                             self.report_warning('Unable to download subtitle for "%s": %s' %
                                                 (sub_lang, error_to_compat_str(err)))
                             continue
