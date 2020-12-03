@@ -1047,10 +1047,6 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
             'only_matching': True,
         },
         {
-            'url': 'https://www.youtube.com/watch?v=MuAGGZNfUkU&list=RDMM',
-            'only_matching': True,
-        },
-        {
             'url': 'https://invidio.us/watch?v=BaW_jenozKc',
             'only_matching': True,
         },
