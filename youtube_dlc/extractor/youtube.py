@@ -597,7 +597,7 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
             }
         },
         {
-            'url': 'https://www.youtube.com/watch?v=BaW_jenozKc&v=UxxajLWwzqY',
+            'url': 'https://www.youtube.com/watch?v=BaW_jenozKc&v=yZIXLfi8CZQ',
             'note': 'Use the first video ID in the URL',
             'info_dict': {
                 'id': 'BaW_jenozKc',
@@ -638,6 +638,24 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
             },
             'skip': 'format 141 not served anymore',
         },
+        # DASH manifest with encrypted signature
+        {
+            'url': 'https://www.youtube.com/watch?v=IB3lcPjvWLA',
+            'info_dict': {
+                'id': 'IB3lcPjvWLA',
+                'ext': 'm4a',
+                'title': 'Afrojack, Spree Wilson - The Spark (Official Music Video) ft. Spree Wilson',
+                'description': 'md5:8f5e2b82460520b619ccac1f509d43bf',
+                'duration': 244,
+                'uploader': 'AfrojackVEVO',
+                'uploader_id': 'AfrojackVEVO',
+                'upload_date': '20131011',
+            },
+            'params': {
+                'youtube_include_dash_manifest': True,
+                'format': '141/bestaudio[ext=m4a]',
+            },
+        },
         # Controversy video
         {
             'url': 'https://www.youtube.com/watch?v=T4XJQO3qol8',
@@ -668,6 +686,27 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                 'upload_date': '20140605',
                 'age_limit': 18,
             },
+        },
+        # video_info is None (https://github.com/ytdl-org/youtube-dl/issues/4421)
+        # YouTube Red ad is not captured for creator
+        {
+            'url': '__2ABJjxzNo',
+            'info_dict': {
+                'id': '__2ABJjxzNo',
+                'ext': 'mp4',
+                'duration': 266,
+                'upload_date': '20100430',
+                'uploader_id': 'deadmau5',
+                'uploader_url': r're:https?://(?:www\.)?youtube\.com/user/deadmau5',
+                'creator': 'Dada Life, deadmau5',
+                'description': 'md5:12c56784b8032162bb936a5f76d55360',
+                'uploader': 'deadmau5',
+                'title': 'Deadmau5 - Some Chords (HD)',
+                'alt_title': 'This Machine Kills Some Chords',
+            },
+            'expected_warnings': [
+                'DASH manifest missing',
+            ]
         },
         # Olympics (https://github.com/ytdl-org/youtube-dl/issues/4431)
         {
@@ -1057,73 +1096,6 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                 'album': 'it\'s too much love to know my dear',
                 'release_date': '20190313',
                 'release_year': 2019,
-            },
-            'params': {
-                'skip_download': True,
-            },
-        },
-        {
-            # Youtube Music Auto-generated description
-            # Retrieve 'artist' field from 'Artist:' in video description
-            # when it is present on youtube music video
-            'url': 'https://www.youtube.com/watch?v=k0jLE7tTwjY',
-            'info_dict': {
-                'id': 'k0jLE7tTwjY',
-                'ext': 'mp4',
-                'title': 'Latch Feat. Sam Smith',
-                'description': 'md5:3cb1e8101a7c85fcba9b4fb41b951335',
-                'upload_date': '20150110',
-                'uploader': 'Various Artists - Topic',
-                'uploader_id': 'UCNkEcmYdjrH4RqtNgh7BZ9w',
-                'artist': 'Disclosure',
-                'track': 'Latch Feat. Sam Smith',
-                'album': 'Latch Featuring Sam Smith',
-                'release_date': '20121008',
-                'release_year': 2012,
-            },
-            'params': {
-                'skip_download': True,
-            },
-        },
-        {
-            # Youtube Music Auto-generated description
-            # handle multiple artists on youtube music video
-            'url': 'https://www.youtube.com/watch?v=74qn0eJSjpA',
-            'info_dict': {
-                'id': '74qn0eJSjpA',
-                'ext': 'mp4',
-                'title': 'Eastside',
-                'description': 'md5:290516bb73dcbfab0dcc4efe6c3de5f2',
-                'upload_date': '20180710',
-                'uploader': 'Benny Blanco - Topic',
-                'uploader_id': 'UCzqz_ksRu_WkIzmivMdIS7A',
-                'artist': 'benny blanco, Halsey, Khalid',
-                'track': 'Eastside',
-                'album': 'Eastside',
-                'release_date': '20180713',
-                'release_year': 2018,
-            },
-            'params': {
-                'skip_download': True,
-            },
-        },
-        {
-            # Youtube Music Auto-generated description
-            # handle youtube music video with release_year and no release_date
-            'url': 'https://www.youtube.com/watch?v=-hcAI0g-f5M',
-            'info_dict': {
-                'id': '-hcAI0g-f5M',
-                'ext': 'mp4',
-                'title': 'Put It On Me',
-                'description': 'md5:f6422397c07c4c907c6638e1fee380a5',
-                'upload_date': '20180426',
-                'uploader': 'Matt Maeson - Topic',
-                'uploader_id': 'UCnEkIGqtGcQMLk73Kp-Q5LQ',
-                'artist': 'Matt Maeson',
-                'track': 'Put It On Me',
-                'album': 'The Hearse',
-                'release_date': None,
-                'release_year': 2018,
             },
             'params': {
                 'skip_download': True,
