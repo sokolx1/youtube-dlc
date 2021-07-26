@@ -19,15 +19,14 @@ class NDRBaseIE(InfoExtractor):
     def _real_extract(self, url):
         mobj = re.match(self._VALID_URL, url)
         display_id = next(group for group in mobj.groups() if group)
-        id = mobj.group('id')
         webpage = self._download_webpage(url, display_id)
-        return self._extract_embed(webpage, display_id, id)
+        return self._extract_embed(webpage, display_id)
 
 
 class NDRIE(NDRBaseIE):
     IE_NAME = 'ndr'
     IE_DESC = 'NDR.de - Norddeutscher Rundfunk'
-    _VALID_URL = r'https?://(?:www\.)?(?:daserste\.)?ndr\.de/(?:[^/]+/)*(?P<display_id>[^/?#]+),(?P<id>[\da-z]+)\.html'
+    _VALID_URL = r'https?://(?:www\.)?ndr\.de/(?:[^/]+/)*(?P<id>[^/?#]+),[\da-z]+\.html'
     _TESTS = [{
         # httpVideo, same content id
         'url': 'http://www.ndr.de/fernsehen/Party-Poette-und-Parade,hafengeburtstag988.html',
@@ -83,18 +82,39 @@ class NDRIE(NDRBaseIE):
             'skip_download': True,
         },
     }, {
+        # with subtitles
+        'url': 'https://www.ndr.de/fernsehen/sendungen/extra_3/extra-3-Satiremagazin-mit-Christian-Ehring,sendung1091858.html',
+        'info_dict': {
+            'id': 'extra18674',
+            'display_id': 'extra-3-Satiremagazin-mit-Christian-Ehring',
+            'ext': 'mp4',
+            'title': 'Extra 3 vom 11.11.2020 mit Christian Ehring',
+            'description': 'md5:42ee53990a715eaaf4dc7f13a3bd56c6',
+            'uploader': 'ndrtv',
+            'upload_date': '20201113',
+            'duration': 1749,
+            'subtitles': {
+                'de': [{
+                    'ext': 'ttml',
+                    'url': r're:^https://www\.ndr\.de.+',
+                }],
+            },
+        },
+        'params': {
+            'skip_download': True,
+        },
+        'expected_warnings': ['Unable to download f4m manifest'],
+    }, {
         'url': 'https://www.ndr.de/Fettes-Brot-Ferris-MC-und-Thees-Uhlmann-live-on-stage,festivalsommer116.html',
         'only_matching': True,
     }]
 
-    def _extract_embed(self, webpage, display_id, id):
+    def _extract_embed(self, webpage, display_id):
         embed_url = self._html_search_meta(
             'embedURL', webpage, 'embed URL',
             default=None) or self._search_regex(
             r'\bembedUrl["\']\s*:\s*(["\'])(?P<url>(?:(?!\1).)+)\1', webpage,
-            'embed URL', fatal=False, group='url')
-        if embed_url is None:
-            return self.url_result('ndr:%s' % id, ie=NDREmbedBaseIE.ie_key())
+            'embed URL', group='url')
         description = self._search_regex(
             r'<p[^>]+itemprop="description">([^<]+)</p>',
             webpage, 'description', default=None) or self._og_search_description(webpage)
@@ -155,7 +175,7 @@ class NJoyIE(NDRBaseIE):
         'only_matching': True,
     }]
 
-    def _extract_embed(self, webpage, display_id, id):
+    def _extract_embed(self, webpage, display_id):
         video_id = self._search_regex(
             r'<iframe[^>]+id="pp_([\da-z]+)"', webpage, 'embed id')
         description = self._search_regex(
@@ -242,6 +262,20 @@ class NDREmbedBaseIE(InfoExtractor):
                 'preference': quality_key(thumbnail.get('quality')),
             })
 
+        subtitles = {}
+        tracks = config.get('tracks')
+        if tracks and isinstance(tracks, list):
+            for track in tracks:
+                if not isinstance(track, dict):
+                    continue
+                track_url = urljoin(url, track.get('src'))
+                if not track_url:
+                    continue
+                subtitles.setdefault(track.get('srclang') or 'de', []).append({
+                    'url': track_url,
+                    'ext': 'ttml',
+                })
+
         return {
             'id': video_id,
             'title': title,
@@ -251,12 +285,13 @@ class NDREmbedBaseIE(InfoExtractor):
             'duration': duration,
             'thumbnails': thumbnails,
             'formats': formats,
+            'subtitles': subtitles,
         }
 
 
 class NDREmbedIE(NDREmbedBaseIE):
     IE_NAME = 'ndr:embed'
-    _VALID_URL = r'https?://(?:www\.)?(?:daserste\.)?ndr\.de/(?:[^/]+/)*(?P<id>[\da-z]+)-(?:player|externalPlayer)\.html'
+    _VALID_URL = r'https?://(?:www\.)?ndr\.de/(?:[^/]+/)*(?P<id>[\da-z]+)-(?:player|externalPlayer)\.html'
     _TESTS = [{
         'url': 'http://www.ndr.de/fernsehen/sendungen/ndr_aktuell/ndraktuell28488-player.html',
         'md5': '8b9306142fe65bbdefb5ce24edb6b0a9',
