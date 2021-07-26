@@ -124,136 +124,146 @@ Then simply type this
     --no-color                       Do not emit color codes in output
 
 ## Network Options:
-    --proxy URL                      Use the specified HTTP/HTTPS/SOCKS proxy.
-                                     To enable SOCKS proxy, specify a proper
-                                     scheme. For example
-                                     socks5://127.0.0.1:1080/. Pass in an empty
-                                     string (--proxy "") for direct connection
-    --socket-timeout SECONDS         Time to wait before giving up, in seconds
-    --source-address IP              Client-side IP address to bind to
-    -4, --force-ipv4                 Make all connections via IPv4
-    -6, --force-ipv6                 Make all connections via IPv6
+    --proxy URL                          Use the specified HTTP/HTTPS/SOCKS
+                                         proxy. To enable SOCKS proxy, specify a
+                                         proper scheme. For example
+                                         socks5://127.0.0.1:1080/. Pass in an
+                                         empty string (--proxy "") for direct
+                                         connection
+    --socket-timeout SECONDS             Time to wait before giving up, in
+                                         seconds
+    --source-address IP                  Client-side IP address to bind to
+    -4, --force-ipv4                     Make all connections via IPv4
+    -6, --force-ipv6                     Make all connections via IPv6
 
 ## Geo Restriction:
-    --geo-verification-proxy URL     Use this proxy to verify the IP address for
-                                     some geo-restricted sites. The default
-                                     proxy specified by --proxy (or none, if the
-                                     option is not present) is used for the
-                                     actual downloading.
-    --geo-bypass                     Bypass geographic restriction via faking
-                                     X-Forwarded-For HTTP header
-    --no-geo-bypass                  Do not bypass geographic restriction via
-                                     faking X-Forwarded-For HTTP header
-    --geo-bypass-country CODE        Force bypass geographic restriction with
-                                     explicitly provided two-letter ISO 3166-2
-                                     country code
-    --geo-bypass-ip-block IP_BLOCK   Force bypass geographic restriction with
-                                     explicitly provided IP block in CIDR
-                                     notation
+    --geo-verification-proxy URL         Use this proxy to verify the IP address
+                                         for some geo-restricted sites. The
+                                         default proxy specified by --proxy (or
+                                         none, if the option is not present) is
+                                         used for the actual downloading.
+    --geo-bypass                         Bypass geographic restriction via
+                                         faking X-Forwarded-For HTTP header
+    --no-geo-bypass                      Do not bypass geographic restriction
+                                         via faking X-Forwarded-For HTTP header
+    --geo-bypass-country CODE            Force bypass geographic restriction
+                                         with explicitly provided two-letter ISO
+                                         3166-2 country code
+    --geo-bypass-ip-block IP_BLOCK       Force bypass geographic restriction
+                                         with explicitly provided IP block in
+                                         CIDR notation
 
 ## Video Selection:
-    --playlist-start NUMBER          Playlist video to start at (default is 1)
-    --playlist-end NUMBER            Playlist video to end at (default is last)
-    --playlist-items ITEM_SPEC       Playlist video items to download. Specify
-                                     indices of the videos in the playlist
-                                     separated by commas like: "--playlist-items
-                                     1,2,5,8" if you want to download videos
-                                     indexed 1, 2, 5, 8 in the playlist. You can
-                                     specify range: "--playlist-items
-                                     1-3,7,10-13", it will download the videos
-                                     at index 1, 2, 3, 7, 10, 11, 12 and 13.
-    --match-title REGEX              Download only matching titles (regex or
-                                     caseless sub-string)
-    --reject-title REGEX             Skip download for matching titles (regex or
-                                     caseless sub-string)
-    --max-downloads NUMBER           Abort after downloading NUMBER files
-    --min-filesize SIZE              Do not download any videos smaller than
-                                     SIZE (e.g. 50k or 44.6m)
-    --max-filesize SIZE              Do not download any videos larger than SIZE
-                                     (e.g. 50k or 44.6m)
-    --date DATE                      Download only videos uploaded in this date
-    --datebefore DATE                Download only videos uploaded on or before
-                                     this date (i.e. inclusive)
-    --dateafter DATE                 Download only videos uploaded on or after
-                                     this date (i.e. inclusive)
-    --min-views COUNT                Do not download any videos with less than
-                                     COUNT views
-    --max-views COUNT                Do not download any videos with more than
-                                     COUNT views
-    --match-filter FILTER            Generic video filter. Specify any key (see
-                                     the "OUTPUT TEMPLATE" for a list of
-                                     available keys) to match if the key is
-                                     present, !key to check if the key is not
-                                     present, key > NUMBER (like "comment_count
-                                     > 12", also works with >=, <, <=, !=, =) to
-                                     compare against a number, key = 'LITERAL'
-                                     (like "uploader = 'Mike Smith'", also works
-                                     with !=) to match against a string literal
-                                     and & to require multiple matches. Values
-                                     which are not known are excluded unless you
-                                     put a question mark (?) after the operator.
-                                     For example, to only match videos that have
-                                     been liked more than 100 times and disliked
-                                     less than 50 times (or the dislike
-                                     functionality is not available at the given
-                                     service), but who also have a description,
-                                     use --match-filter "like_count > 100 &
-                                     dislike_count <? 50 & description" .
-    --no-playlist                    Download only the video, if the URL refers
-                                     to a video and a playlist.
-    --yes-playlist                   Download the playlist, if the URL refers to
-                                     a video and a playlist.
-    --age-limit YEARS                Download only videos suitable for the given
-                                     age
-    --download-archive FILE          Download only videos not listed in the
-                                     archive file. Record the IDs of all
-                                     downloaded videos in it.
-    --include-ads                    Download advertisements as well
-                                     (experimental)
+    --playlist-start NUMBER              Playlist video to start at (default is
+                                         1)
+    --playlist-end NUMBER                Playlist video to end at (default is
+                                         last)
+    --playlist-items ITEM_SPEC           Playlist video items to download.
+                                         Specify indices of the videos in the
+                                         playlist separated by commas like: "--
+                                         playlist-items 1,2,5,8" if you want to
+                                         download videos indexed 1, 2, 5, 8 in
+                                         the playlist. You can specify range: "
+                                         --playlist-items 1-3,7,10-13", it will
+                                         download the videos at index 1, 2, 3,
+                                         7, 10, 11, 12 and 13.
+    --match-title REGEX                  Download only matching titles (regex or
+                                         caseless sub-string)
+    --reject-title REGEX                 Skip download for matching titles
+                                         (regex or caseless sub-string)
+    --max-downloads NUMBER               Abort after downloading NUMBER files
+    --min-filesize SIZE                  Do not download any videos smaller than
+                                         SIZE (e.g. 50k or 44.6m)
+    --max-filesize SIZE                  Do not download any videos larger than
+                                         SIZE (e.g. 50k or 44.6m)
+    --date DATE                          Download only videos uploaded in this
+                                         date
+    --datebefore DATE                    Download only videos uploaded on or
+                                         before this date (i.e. inclusive)
+    --dateafter DATE                     Download only videos uploaded on or
+                                         after this date (i.e. inclusive)
+    --min-views COUNT                    Do not download any videos with less
+                                         than COUNT views
+    --max-views COUNT                    Do not download any videos with more
+                                         than COUNT views
+    --match-filter FILTER                Generic video filter. Specify any key
+                                         (see the "OUTPUT TEMPLATE" for a list
+                                         of available keys) to match if the key
+                                         is present, !key to check if the key is
+                                         not present, key > NUMBER (like
+                                         "comment_count > 12", also works with
+                                         >=, <, <=, !=, =) to compare against a
+                                         number, key = 'LITERAL' (like "uploader
+                                         = 'Mike Smith'", also works with !=) to
+                                         match against a string literal and & to
+                                         require multiple matches. Values which
+                                         are not known are excluded unless you
+                                         put a question mark (?) after the
+                                         operator. For example, to only match
+                                         videos that have been liked more than
+                                         100 times and disliked less than 50
+                                         times (or the dislike functionality is
+                                         not available at the given service),
+                                         but who also have a description, use
+                                         --match-filter "like_count > 100 &
+                                         dislike_count <? 50 & description" .
+    --no-playlist                        Download only the video, if the URL
+                                         refers to a video and a playlist.
+    --yes-playlist                       Download the playlist, if the URL
+                                         refers to a video and a playlist.
+    --age-limit YEARS                    Download only videos suitable for the
+                                         given age
+    --download-archive FILE              Download only videos not listed in the
+                                         archive file. Record the IDs of all
+                                         downloaded videos in it.
+    --include-ads                        Download advertisements as well
+                                         (experimental)
 
 ## Download Options:
-    -r, --limit-rate RATE            Maximum download rate in bytes per second
-                                     (e.g. 50K or 4.2M)
-    -R, --retries RETRIES            Number of retries (default is 10), or
-                                     "infinite".
-    --fragment-retries RETRIES       Number of retries for a fragment (default
-                                     is 10), or "infinite" (DASH, hlsnative and
-                                     ISM)
-    --skip-unavailable-fragments     Skip unavailable fragments (DASH, hlsnative
-                                     and ISM)
-    --abort-on-unavailable-fragment  Abort downloading when some fragment is not
-                                     available
-    --keep-fragments                 Keep downloaded fragments on disk after
-                                     downloading is finished; fragments are
-                                     erased by default
-    --buffer-size SIZE               Size of download buffer (e.g. 1024 or 16K)
-                                     (default is 1024)
-    --no-resize-buffer               Do not automatically adjust the buffer
-                                     size. By default, the buffer size is
-                                     automatically resized from an initial value
-                                     of SIZE.
-    --http-chunk-size SIZE           Size of a chunk for chunk-based HTTP
-                                     downloading (e.g. 10485760 or 10M) (default
-                                     is disabled). May be useful for bypassing
-                                     bandwidth throttling imposed by a webserver
-                                     (experimental)
-    --playlist-reverse               Download playlist videos in reverse order
-    --playlist-random                Download playlist videos in random order
-    --xattr-set-filesize             Set file xattribute ytdl.filesize with
-                                     expected file size
-    --hls-prefer-native              Use the native HLS downloader instead of
-                                     ffmpeg
-    --hls-prefer-ffmpeg              Use ffmpeg instead of the native HLS
-                                     downloader
-    --hls-use-mpegts                 Use the mpegts container for HLS videos,
-                                     allowing to play the video while
-                                     downloading (some players may not be able
-                                     to play it)
-    --external-downloader COMMAND    Use the specified external downloader.
-                                     Currently supports
-                                     aria2c,avconv,axel,curl,ffmpeg,httpie,wget
-    --external-downloader-args ARGS  Give these arguments to the external
-                                     downloader
+    -r, --limit-rate RATE                Maximum download rate in bytes per
+                                         second (e.g. 50K or 4.2M)
+    -R, --retries RETRIES                Number of retries (default is 10), or
+                                         "infinite".
+    --fragment-retries RETRIES           Number of retries for a fragment
+                                         (default is 10), or "infinite" (DASH,
+                                         hlsnative and ISM)
+    --skip-unavailable-fragments         Skip unavailable fragments (DASH,
+                                         hlsnative and ISM)
+    --abort-on-unavailable-fragment      Abort downloading when some fragment is
+                                         not available
+    --keep-fragments                     Keep downloaded fragments on disk after
+                                         downloading is finished; fragments are
+                                         erased by default
+    --buffer-size SIZE                   Size of download buffer (e.g. 1024 or
+                                         16K) (default is 1024)
+    --no-resize-buffer                   Do not automatically adjust the buffer
+                                         size. By default, the buffer size is
+                                         automatically resized from an initial
+                                         value of SIZE.
+    --http-chunk-size SIZE               Size of a chunk for chunk-based HTTP
+                                         downloading (e.g. 10485760 or 10M)
+                                         (default is disabled). May be useful
+                                         for bypassing bandwidth throttling
+                                         imposed by a webserver (experimental)
+    --playlist-reverse                   Download playlist videos in reverse
+                                         order
+    --playlist-random                    Download playlist videos in random
+                                         order
+    --xattr-set-filesize                 Set file xattribute ytdl.filesize with
+                                         expected file size
+    --hls-prefer-native                  Use the native HLS downloader instead
+                                         of ffmpeg
+    --hls-prefer-ffmpeg                  Use ffmpeg instead of the native HLS
+                                         downloader
+    --hls-use-mpegts                     Use the mpegts container for HLS
+                                         videos, allowing to play the video
+                                         while downloading (some players may not
+                                         be able to play it)
+    --external-downloader COMMAND        Use the specified external downloader.
+                                         Currently supports aria2c,avconv,axel,c
+                                         url,ffmpeg,httpie,wget
+    --external-downloader-args ARGS      Give these arguments to the external
+                                         downloader
 
 ## Filesystem Options:
     -a, --batch-file FILE            File containing URLs to download ('-' for
@@ -301,11 +311,12 @@ Then simply type this
     --trim-file-name                 Limit the filename length (extension
                                      excluded)
 
-## Thumbnail images:
-    --write-thumbnail                Write thumbnail image to disk
-    --write-all-thumbnails           Write all thumbnail image formats to disk
-    --list-thumbnails                Simulate and list all available thumbnail
-                                     formats
+## Thumbnail Options:
+    --write-thumbnail                    Write thumbnail image to disk
+    --write-all-thumbnails               Write all thumbnail image formats to
+                                         disk
+    --list-thumbnails                    Simulate and list all available
+                                         thumbnail formats
 
 ## Verbosity / Simulation Options:
     -q, --quiet                      Activate quiet mode
@@ -391,18 +402,19 @@ Then simply type this
                                      webm, flv. Ignored if no merge is required
 
 ## Subtitle Options:
-    --write-sub                      Write subtitle file
-    --write-auto-sub                 Write automatically generated subtitle file
-                                     (YouTube only)
-    --all-subs                       Download all the available subtitles of the
-                                     video
-    --list-subs                      List all available subtitles for the video
-    --sub-format FORMAT              Subtitle format, accepts formats
-                                     preference, for example: "srt" or
-                                     "ass/srt/best"
-    --sub-lang LANGS                 Languages of the subtitles to download
-                                     (optional) separated by commas, use --list-
-                                     subs for available language tags
+    --write-sub                          Write subtitle file
+    --write-auto-sub                     Write automatically generated subtitle
+                                         file (YouTube only)
+    --all-subs                           Download all the available subtitles of
+                                         the video
+    --list-subs                          List all available subtitles for the
+                                         video
+    --sub-format FORMAT                  Subtitle format, accepts formats
+                                         preference, for example: "srt" or
+                                         "ass/srt/best"
+    --sub-lang LANGS                     Languages of the subtitles to download
+                                         (optional) separated by commas, use
+                                         --list-subs for available language tags
 
 ## Authentication Options:
     -u, --username USERNAME          Login with this account ID
@@ -628,7 +640,7 @@ Available for the media that is a track or a part of a music album:
  - `disc_number` (numeric): Number of the disc or other physical medium the track belongs to
  - `release_year` (numeric): Year (YYYY) when the album was released
 
-Each aforementioned sequence when referenced in an output template will be replaced by the actual value corresponding to the sequence name. Note that some of the sequences are not guaranteed to be present since they depend on the metadata obtained by a particular extractor. Such sequences will be replaced with `NA`.
+Each aforementioned sequence when referenced in an output template will be replaced by the actual value corresponding to the sequence name. Note that some of the sequences are not guaranteed to be present since they depend on the metadata obtained by a particular extractor. Such sequences will be replaced with placeholder value provided with `--output-na-placeholder` (`NA` by default).
 
 For example for `-o %(title)s-%(id)s.%(ext)s` and an mp4 video with title `youtube-dlc test video` and id `BaW_jenozKcj`, this will result in a `youtube-dlc test video-BaW_jenozKcj.mp4` file created in the current directory.
 
@@ -723,6 +735,7 @@ Also filtering work for comparisons `=` (equals), `^=` (starts with), `$=` (ends
  - `container`: Name of the container format
  - `protocol`: The protocol that will be used for the actual download, lower-case (`http`, `https`, `rtsp`, `rtmp`, `rtmpe`, `mms`, `f4m`, `ism`, `http_dash_segments`, `m3u8`, or `m3u8_native`)
  - `format_id`: A short description of the format
+ - `language`: Language code
 
 Any string comparison may be prefixed with negation `!` in order to produce an opposite comparison, e.g. `!*=` (does not contain).
 
