@@ -28,7 +28,6 @@ from ..utils import (
     parse_iso8601,
     smuggle_url,
     str_or_none,
-    try_get,
     unescapeHTML,
     unsmuggle_url,
     UnsupportedError,
@@ -148,7 +147,7 @@ class BrightcoveLegacyIE(InfoExtractor):
     ]
 
     @classmethod
-    def _build_brightcove_url(cls, object_str):
+    def _build_brighcove_url(cls, object_str):
         """
         Build a Brightcove url from a xml string containing
         <object class="BrightcoveExperience">{params}</object>
@@ -218,7 +217,7 @@ class BrightcoveLegacyIE(InfoExtractor):
         return cls._make_brightcove_url(params)
 
     @classmethod
-    def _build_brightcove_url_from_js(cls, object_js):
+    def _build_brighcove_url_from_js(cls, object_js):
         # The layout of JS is as follows:
         # customBC.createVideo = function (width, height, playerID, playerKey, videoPlayer, VideoRandomID) {
         #   // build Brightcove <object /> XML
@@ -273,12 +272,12 @@ class BrightcoveLegacyIE(InfoExtractor):
             ).+?>\s*</object>''',
             webpage)
         if matches:
-            return list(filter(None, [cls._build_brightcove_url(m) for m in matches]))
+            return list(filter(None, [cls._build_brighcove_url(m) for m in matches]))
 
         matches = re.findall(r'(customBC\.createVideo\(.+?\);)', webpage)
         if matches:
             return list(filter(None, [
-                cls._build_brightcove_url_from_js(custom_bc)
+                cls._build_brighcove_url_from_js(custom_bc)
                 for custom_bc in matches]))
         return [src for _, src in re.findall(
             r'<iframe[^>]+src=([\'"])((?:https?:)?//link\.brightcove\.com/services/player/(?!\1).+)\1', webpage)]
@@ -471,18 +470,18 @@ class BrightcoveNewIE(AdobePassIE):
     def _parse_brightcove_metadata(self, json_data, video_id, headers={}):
         title = json_data['name'].strip()
 
-        num_drm_sources = 0
         formats = []
-        sources = json_data.get('sources') or []
-        for source in sources:
+        sources_num = len(json_data.get('sources'))
+        key_systems_present = 0
+        for source in json_data.get('sources', []):
             container = source.get('container')
             ext = mimetype2ext(source.get('type'))
             src = source.get('src')
-            # https://support.brightcove.com/playback-api-video-fields-reference#key_systems_object
-            if container == 'WVM' or source.get('key_systems'):
-                num_drm_sources += 1
+            # https://apis.support.brightcove.com/playback/references/playback-api-video-fields-reference.html
+            if source.get('key_systems'):
+                key_systems_present += 1
                 continue
-            elif ext == 'ism':
+            elif ext == 'ism' or container == 'WVM':
                 continue
             elif ext == 'm3u8' or container == 'M2TS':
                 if not src:
@@ -540,14 +539,23 @@ class BrightcoveNewIE(AdobePassIE):
                     })
                 formats.append(f)
 
+        if sources_num == key_systems_present:
+            raise ExtractorError('This video is DRM protected', expected=True)
+
         if not formats:
-            errors = json_data.get('errors')
-            if errors:
-                error = errors[0]
-                raise ExtractorError(
-                    error.get('message') or error.get('error_subcode') or error['error_code'], expected=True)
-            if sources and num_drm_sources == len(sources):
-                raise ExtractorError('This video is DRM protected.', expected=True)
+            # for sonyliv.com DRM protected videos
+            s3_source_url = json_data.get('custom_fields', {}).get('s3sourceurl')
+            if s3_source_url:
+                formats.append({
+                    'url': s3_source_url,
+                    'format_id': 'source',
+                })
+
+        errors = json_data.get('errors')
+        if not formats and errors:
+            error = errors[0]
+            raise ExtractorError(
+                error.get('message') or error.get('error_subcode') or error['error_code'], expected=True)
 
         self._sort_formats(formats)
 
@@ -601,27 +609,24 @@ class BrightcoveNewIE(AdobePassIE):
         store_pk = lambda x: self._downloader.cache.store('brightcove', policy_key_id, x)
 
         def extract_policy_key():
-            base_url = 'http://players.brightcove.net/%s/%s_%s/' % (account_id, player_id, embed)
-            config = self._download_json(
-                base_url + 'config.json', video_id, fatal=False) or {}
-            policy_key = try_get(
-                config, lambda x: x['video_cloud']['policy_key'])
-            if not policy_key:
-                webpage = self._download_webpage(
-                    base_url + 'index.min.js', video_id)
+            webpage = self._download_webpage(
+                'http://players.brightcove.net/%s/%s_%s/index.min.js'
+                % (account_id, player_id, embed), video_id)
 
-                catalog = self._search_regex(
-                    r'catalog\(({.+?})\);', webpage, 'catalog', default=None)
+            policy_key = None
+
+            catalog = self._search_regex(
+                r'catalog\(({.+?})\);', webpage, 'catalog', default=None)
+            if catalog:
+                catalog = self._parse_json(
+                    js_to_json(catalog), video_id, fatal=False)
                 if catalog:
-                    catalog = self._parse_json(
-                        js_to_json(catalog), video_id, fatal=False)
-                    if catalog:
-                        policy_key = catalog.get('policyKey')
+                    policy_key = catalog.get('policyKey')
 
-                if not policy_key:
-                    policy_key = self._search_regex(
-                        r'policyKey\s*:\s*(["\'])(?P<pk>.+?)\1',
-                        webpage, 'policy key', group='pk')
+            if not policy_key:
+                policy_key = self._search_regex(
+                    r'policyKey\s*:\s*(["\'])(?P<pk>.+?)\1',
+                    webpage, 'policy key', group='pk')
 
             store_pk(policy_key)
             return policy_key

@@ -29,7 +29,7 @@ class DRTVIE(InfoExtractor):
                     https?://
                         (?:
                             (?:www\.)?dr\.dk/(?:tv/se|nyheder|radio(?:/ondemand)?)/(?:[^/]+/)*|
-                            (?:www\.)?(?:dr\.dk|dr-massive\.com)/drtv/(?:se|episode|program)/
+                            (?:www\.)?(?:dr\.dk|dr-massive\.com)/drtv/(?:se|episode)/
                         )
                         (?P<id>[\da-z_-]+)
                     '''
@@ -110,9 +110,6 @@ class DRTVIE(InfoExtractor):
         'only_matching': True,
     }, {
         'url': 'https://dr-massive.com/drtv/se/bonderoeven_71769',
-        'only_matching': True,
-    }, {
-        'url': 'https://www.dr.dk/drtv/program/jagten_220924',
         'only_matching': True,
     }]
 

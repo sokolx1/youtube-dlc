@@ -16,7 +16,6 @@ class FranceInterIE(InfoExtractor):
             'ext': 'mp3',
             'title': 'Affaire Cahuzac : le contentieux du compte en Suisse',
             'description': 'md5:401969c5d318c061f86bda1fa359292b',
-            'thumbnail': r're:^https?://.*\.jpg',
             'upload_date': '20160907',
         },
     }
@@ -32,7 +31,6 @@ class FranceInterIE(InfoExtractor):
 
         title = self._og_search_title(webpage)
         description = self._og_search_description(webpage)
-        thumbnail = self._html_search_meta(['og:image', 'twitter:image'], webpage)
 
         upload_date_str = self._search_regex(
             r'class=["\']\s*cover-emission-period\s*["\'][^>]*>[^<]+\s+(\d{1,2}\s+[^\s]+\s+\d{4})<',
@@ -50,7 +48,6 @@ class FranceInterIE(InfoExtractor):
             'id': video_id,
             'title': title,
             'description': description,
-            'thumbnail': thumbnail,
             'upload_date': upload_date,
             'formats': [{
                 'url': video_url,

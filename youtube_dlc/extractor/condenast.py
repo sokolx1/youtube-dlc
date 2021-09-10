@@ -16,8 +16,6 @@ from ..utils import (
     mimetype2ext,
     orderedSet,
     parse_iso8601,
-    strip_or_none,
-    try_get,
 )
 
 
@@ -84,7 +82,6 @@ class CondeNastIE(InfoExtractor):
             'uploader': 'gq',
             'upload_date': '20170321',
             'timestamp': 1490126427,
-            'description': 'How much grimmer would things be if these people were competent?',
         },
     }, {
         # JS embed
@@ -96,7 +93,7 @@ class CondeNastIE(InfoExtractor):
             'title': '3D printed TSA Travel Sentry keys really do open TSA locks',
             'uploader': 'arstechnica',
             'upload_date': '20150916',
-            'timestamp': 1442434920,
+            'timestamp': 1442434955,
         }
     }, {
         'url': 'https://player.cnevids.com/inline/video/59138decb57ac36b83000005.js?target=js-cne-player',
@@ -199,13 +196,6 @@ class CondeNastIE(InfoExtractor):
             })
         self._sort_formats(formats)
 
-        subtitles = {}
-        for t, caption in video_info.get('captions', {}).items():
-            caption_url = caption.get('src')
-            if not (t in ('vtt', 'srt', 'tml') and caption_url):
-                continue
-            subtitles.setdefault('en', []).append({'url': caption_url})
-
         return {
             'id': video_id,
             'formats': formats,
@@ -218,7 +208,6 @@ class CondeNastIE(InfoExtractor):
             'season': video_info.get('season_title'),
             'timestamp': parse_iso8601(video_info.get('premiere_date')),
             'categories': video_info.get('categories'),
-            'subtitles': subtitles,
         }
 
     def _real_extract(self, url):
@@ -236,16 +225,8 @@ class CondeNastIE(InfoExtractor):
         if url_type == 'series':
             return self._extract_series(url, webpage)
         else:
-            video = try_get(self._parse_json(self._search_regex(
-                r'__PRELOADED_STATE__\s*=\s*({.+?});', webpage,
-                'preload state', '{}'), display_id),
-                lambda x: x['transformed']['video'])
-            if video:
-                params = {'videoId': video['id']}
-                info = {'description': strip_or_none(video.get('description'))}
-            else:
-                params = self._extract_video_params(webpage, display_id)
-                info = self._search_json_ld(
-                    webpage, display_id, fatal=False)
+            params = self._extract_video_params(webpage, display_id)
+            info = self._search_json_ld(
+                webpage, display_id, fatal=False)
             info.update(self._extract_video(params))
             return info

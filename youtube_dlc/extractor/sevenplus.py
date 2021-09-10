@@ -4,12 +4,8 @@ from __future__ import unicode_literals
 import re
 
 from .brightcove import BrightcoveNewIE
-from ..compat import (
-    compat_HTTPError,
-    compat_str,
-)
+from ..compat import compat_str
 from ..utils import (
-    ExtractorError,
     try_get,
     update_url_query,
 )
@@ -45,22 +41,16 @@ class SevenPlusIE(BrightcoveNewIE):
     def _real_extract(self, url):
         path, episode_id = re.match(self._VALID_URL, url).groups()
 
-        try:
-            media = self._download_json(
-                'https://videoservice.swm.digital/playback', episode_id, query={
-                    'appId': '7plus',
-                    'deviceType': 'web',
-                    'platformType': 'web',
-                    'accountId': 5303576322001,
-                    'referenceId': 'ref:' + episode_id,
-                    'deliveryId': 'csai',
-                    'videoType': 'vod',
-                })['media']
-        except ExtractorError as e:
-            if isinstance(e.cause, compat_HTTPError) and e.cause.code == 403:
-                raise ExtractorError(self._parse_json(
-                    e.cause.read().decode(), episode_id)[0]['error_code'], expected=True)
-            raise
+        media = self._download_json(
+            'https://videoservice.swm.digital/playback', episode_id, query={
+                'appId': '7plus',
+                'deviceType': 'web',
+                'platformType': 'web',
+                'accountId': 5303576322001,
+                'referenceId': 'ref:' + episode_id,
+                'deliveryId': 'csai',
+                'videoType': 'vod',
+            })['media']
 
         for source in media.get('sources', {}):
             src = source.get('src')

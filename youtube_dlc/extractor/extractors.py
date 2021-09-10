@@ -751,6 +751,7 @@ from .ninecninemedia import NineCNineMediaIE
 from .ninegag import NineGagIE
 from .ninenow import NineNowIE
 from .nintendo import NintendoIE
+from .nitter import NitterIE
 from .njpwworld import NJPWWorldIE
 from .nobelprize import NobelPrizeIE
 from .noco import NocoIE
@@ -1037,6 +1038,10 @@ from .sky import (
     SkyNewsIE,
     SkySportsIE,
 )
+from .skyitalia import (
+    SkyArteItaliaIE,
+    SkyItaliaIE,
+)
 from .slideshare import SlideshareIE
 from .slideslive import SlidesLiveIE
 from .slutload import SlutloadIE
@@ -1170,6 +1175,7 @@ from .theweatherchannel import TheWeatherChannelIE
 from .thisamericanlife import ThisAmericanLifeIE
 from .thisav import ThisAVIE
 from .thisoldhouse import ThisOldHouseIE
+from .thisvid import ThisVidIE
 from .threeqsdn import ThreeQSDNIE
 from .tiktok import TikTokIE
 from .tinypic import TinyPicIE
@@ -1539,4 +1545,5 @@ from .zattoo import (
 )
 from .zdf import ZDFIE, ZDFChannelIE
 from .zingmp3 import ZingMp3IE
+from .zoom import ZoomIE
 from .zype import ZypeIE
