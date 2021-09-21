@@ -443,7 +443,7 @@ class YoutubePlaylistBaseInfoExtractor(YoutubeEntryListBaseInfoExtractor):
                 titles_in_page.append(video_title)
                 additional_data_in_page.append(additional_data)
 
-        for video_id, video_title in zip(ids_in_page, titles_in_page):
+        for video_id, video_title, additional_data in zip(ids_in_page, titles_in_page, additional_data_in_page):
             yield self.url_result(video_id, 'Youtube', video_id, video_title, additional_data)
 
 
